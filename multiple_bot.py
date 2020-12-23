@@ -62,21 +62,16 @@ https://discordpy.readthedocs.io/en/latest/ext/tasks/
 async def called_second():
     try:
         data = scrape_live_ticker()
-        data_index = data['index']
-        ticker_es =  data_index[1]
-        ticker_nas = data_index[2] 
-        ticker_dow = data_index[0] 
-        ticker_vix = data_index[3]
+        ticker_es       = data['es']
+        ticker_nas      = data['nas'] 
+        ticker_dow      = data['dow'] 
+        ticker_vix      = data['vix']
+        ticker_dollar   = data['dollar']
+        ticker_gold     = data['gold']
+        ticker_btc      = data['btc']
+        ticker_eth      = data['eth']
+        ticker_gold     = data['gold']
 
-        data_dollar = data['dollar']
-        ticker_dollar = data_dollar[6]
-
-        data_commmodity = data['commodity']
-        ticker_gold =  data_commmodity[0]
-
-        data_shitcoin = data['shitcoin']
-        shitcoin_btc = data_shitcoin[0]
-        shitcoin_eth = data_shitcoin[1]
 
         ## es
         name_es = '{:20,.2f}'.format(ticker_es['last'])
@@ -155,7 +150,7 @@ async def called_second():
         await vix_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"VIX {watching_vix}"))
     
         ## dollar  
-        name_dollar = '{:20,.2f}'.format(ticker_dollar['price'])
+        name_dollar = '{:20,.2f}'.format(ticker_dollar['last'])
         watching_dollar = ticker_dollar['change%']
         guild_channel_dollar = dollar_bot.get_guild(target_channel_id)
 
@@ -196,8 +191,8 @@ async def called_second():
 
         #shit coin stuff
         # btc
-        name_btc = '{:20,.2f}'.format(shitcoin_btc['price'])
-        watching_btc = shitcoin_btc['change%']
+        name_btc = '{:20,.2f}'.format(ticker_btc['last'])
+        watching_btc = ticker_btc['change%']
         guild_channel3 = btc_bot.get_guild(target_channel_id)
 
         red = get(guild_channel3.roles, name='RED')
@@ -215,8 +210,8 @@ async def called_second():
         await btc_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"BTC {watching_btc}"))
 
         # eth 
-        name_eth= '{:20,.2f}'.format(shitcoin_eth['price'])
-        watching_eth = shitcoin_eth['change%']
+        name_eth= '{:20,.2f}'.format(ticker_eth['last'])
+        watching_eth = ticker_eth['change%']
         guild_channel4 = eth_bot.get_guild(target_channel_id)
 
         red = get(guild_channel4.roles, name='RED')
