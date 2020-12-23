@@ -54,7 +54,7 @@ def scrape_live_ticker():
     data = {
         'dow': index_dict[0], 
         'es': index_dict[1] ,
-        'nas': index_dict[2],
+        'nas': index_dict[-3],
         'dollar': index_dict[-1],
         'vix': index_dict[-2],
         'gold': commodity_dict[0],

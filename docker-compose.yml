@@ -4,8 +4,8 @@ services:
     container_name: liveTickerBot 
     image:  "live_ticker_bot"
     build: 
-      context: .
+      context: bot
       dockerfile: liveTicker.Dockerfile
     volumes:
-     - ./:/app:z
+     - ./bot:/app:z
     restart: unless-stopped
