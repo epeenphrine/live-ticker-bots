@@ -64,7 +64,7 @@ def scrape_live_ticker():
         'dow':      futures_df_dict[0], 
         'es':       futures_df_dict[1] ,
         'nas':      futures_df_dict[2],
-        'vix':      futures_df_dict[5],
+        'vix':      futures_df_dict[4],
         'dollar':   index_dict[-1],
         'gold':     commodity_dict[0],
         'btc':      shitcoin_dict[0],
