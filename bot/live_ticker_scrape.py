@@ -13,9 +13,18 @@ def scrape_live_ticker():
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
     }
+    futures_url = 'https://www.investing.com/indices/indices-futures'
     change_columns = ['name', 'last', 'change%'] 
+
     res = requests.get('https://investing.com', headers=headers).content
+    futures_res = requests.get(futures_url, headers= headers).content
+
     df= pd.read_html(res)
+    futures_df = pd.read_html(futures_res)
+    futures_df = futures_df[0]
+    futures_df.drop(columns=["Unnamed: 0", 'Month', 'High', 'Low', 'Chg.','Time', 'Unnamed: 9'], axis=1, inplace=True)
+    futures_df.columns = change_columns
+    futures_df_dict =  futures_df.to_dict('records')
     ### need to uncomment and run this to check index of the list of dataframes
     # count=0
     # for item in df:
@@ -52,16 +61,15 @@ def scrape_live_ticker():
 
     ## cleaned data
     data = {
-        'dow': index_dict[0], 
-        'es': index_dict[1] ,
-        'nas': index_dict[-3],
-        'dollar': index_dict[-1],
-        'vix': index_dict[-2],
-        'gold': commodity_dict[0],
-        'btc': shitcoin_dict[0],
-        'eth': shitcoin_dict[1]
+        'dow':      futures_df_dict[0], 
+        'es':       futures_df_dict[1] ,
+        'nas':      futures_df_dict[2],
+        'vix':      futures_df_dict[5],
+        'dollar':   index_dict[-1],
+        'gold':     commodity_dict[0],
+        'btc':      shitcoin_dict[0],
+        'eth':      shitcoin_dict[1]
     }
-    print(data)
     ## commented out incase want to save
     # with open('tickerScrape.json','w') as f:
     #     json.dump(data,f)
