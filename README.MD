@@ -6,4 +6,4 @@ make sure to change target_channe_id  variable in multiple_bot.py \
 ### docker 
 once setting up initial configuration \
 run: \
-docker-compose -f liveTicker.yml up -d 
+docker-compose up -d 
