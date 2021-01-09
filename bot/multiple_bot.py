@@ -9,7 +9,6 @@ import asyncio
 import os
 import datetime
 
-
 from live_ticker_scrape import scrape_live_ticker
 from tokens import dev, dev1, es, nas, dow, dollar, vix, btc, eth, gold 
 
@@ -76,7 +75,6 @@ async def called_second():
         ticker_gold     = data['gold']
         ticker_btc      = data['btc']
         ticker_eth      = data['eth']
-
 
         ## es
         name_es = '{:20,.2f}'.format(ticker_es['last'])
@@ -207,6 +205,7 @@ async def called_second():
             discord_bot = guild_channel3.me
             await discord_bot.remove_roles(green)
             await discord_bot.add_roles(red)
+
         else: 
             discord_bot = guild_channel3.me
             await discord_bot.remove_roles(red)
