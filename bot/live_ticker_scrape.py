@@ -15,19 +15,16 @@ def scrape_live_ticker():
         "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
     }
 
-    main_url        = 'https://investing.com' 
     futures_url     = 'https://www.investing.com/indices/indices-futures'
     currency_url    = 'https://www.investing.com/currencies/fx-futures'
     commodity_url   = 'https://www.investing.com/commodities/real-time-futures'
     shitcoin_url    = 'https://www.investing.com/crypto/currencies'
 
-    main_res        =   requests.get(main_url, headers=headers).content
     futures_res     =   requests.get(futures_url, headers= headers).content
     currency_res    =   requests.get(currency_url, headers = headers).content
     commodity_res   =   requests.get(commodity_url, headers = headers).content
     shitcoin_res    =   requests.get(shitcoin_url, headers = headers).content
 
-    df= pd.read_html(main_res)
 
     futures_df      =   pd.read_html(futures_res)
     currency_df     =   pd.read_html(currency_res)
