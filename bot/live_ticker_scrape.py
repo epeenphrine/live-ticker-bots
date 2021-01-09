@@ -36,11 +36,17 @@ def scrape_live_ticker():
     futures_df.columns = change_columns
     futures_df_dict =  futures_df.to_dict('records')
 
+    dow = [future for future in futures_df_dict if future['name'] == 'US 30'][0]
+    es  = [future for future in futures_df_dict if future['name'] == 'US 500'][0]
+    nas = [future for future in futures_df_dict if future['name'] == 'US Tech 100'][0]
+    vix = [future for future in futures_df_dict if future['name'] == 'S&P 500 VIX'][0]
 
     currency_df = currency_df[0]
     currency_df.drop(columns=["Unnamed: 0", 'Month', 'High', 'Low', 'Chg.','Time', 'Unnamed: 9'], axis=1, inplace=True)
     currency_df.columns = change_columns
     currency_df_dict =  currency_df.to_dict('records')
+
+    dxy = [currency for currency in currency_df_dict if currency['name'] == 'Dollar Index'][0]
 
     shitcoin_df = shitcoin_df[0]
     shitcoin_df.drop(columns=["#", "Unnamed: 1", 'Name', 'Market Cap', 'Vol (24H)', 'Total Vol', 'Chg (7D)'],axis=1, inplace=True)
@@ -50,7 +56,6 @@ def scrape_live_ticker():
     ## too much rows ... filter this way. Might be better 
     btc = [shitcoin for shitcoin in shitcoin_df_dict if shitcoin['name']== "BTC"][0]
     eth = [shitcoin for shitcoin in shitcoin_df_dict if shitcoin['name']== "ETH"][0]
-
 
     commodity_df = commodity_df[0]
     commodity_df.drop(columns=["Unnamed: 0", 'Month', 'High', 'Low', 'Chg.','Time', 'Unnamed: 9'], axis=1, inplace=True)
@@ -68,11 +73,11 @@ def scrape_live_ticker():
 
     ## cleaned data
     data = {
-        'dow':      futures_df_dict[0], 
-        'es':       futures_df_dict[1] ,
-        'nas':      futures_df_dict[2],
-        'vix':      futures_df_dict[4],
-        'dollar':   currency_df_dict[0],
+        'dow':      dow, 
+        'es':       es,
+        'nas':      nas,
+        'vix':      vix,
+        'dollar':   dxy,
         'gold':     gold, 
         'btc':      btc, 
         'eth':      eth 
