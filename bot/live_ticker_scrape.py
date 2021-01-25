@@ -25,7 +25,6 @@ def scrape_live_ticker():
     commodity_res   =   requests.get(commodity_url, headers = headers).content
     shitcoin_res    =   requests.get(shitcoin_url, headers = headers).content
 
-
     futures_df      =   pd.read_html(futures_res)
     currency_df     =   pd.read_html(currency_res)
     shitcoin_df     =   pd.read_html(shitcoin_res)
