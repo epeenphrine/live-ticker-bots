@@ -86,6 +86,4 @@ def scrape_live_ticker():
     # with open('tickerScrape.json','w') as f:
     #     json.dump(data,f)
     return data 
-scrape_futres(url):
-    
 scrape_live_ticker()
