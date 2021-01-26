@@ -1,5 +1,5 @@
 FROM python:3.6
 WORKDIR /app
 COPY . /app
-RUN pip install discord.py bs4 lxml pandas requests html5lib
+RUN pip install -r requirements.txt 
 CMD python multiple_bot.py
