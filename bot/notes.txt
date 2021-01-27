@@ -1,0 +1,4 @@
+## api for getting market data
+https://ql.stocktwits.com/batch?symbols=gme
+## multiple example
+https://ql.stocktwits.com/batch?symbols=gme%2aapl
