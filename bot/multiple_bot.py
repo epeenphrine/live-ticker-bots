@@ -9,8 +9,8 @@ import asyncio
 import os
 import datetime
 
-from live_ticker_scrape import scrape_live_ticker
-from tokens import dev, dev1, es, nas, dow, dollar, vix, btc, eth, gold 
+from live_ticker_scrape import wrangle_data
+from tokens import dev, dev1, es, nas, dow, dollar, vix, btc, eth, silver 
 
 es_bot = discord.Client()
 nas_bot = discord.Client()
@@ -18,8 +18,8 @@ dow_bot = discord.Client()
 vix_bot = discord.Client()
 ticker_vix = discord.Client()
 
-# dollar_bot = discord.Client()
-# gold_bot = discord.Client()
+dollar_bot = discord.Client()
+silver_bot = discord.Client()
 
 btc_bot = discord.Client()
 eth_bot=  discord.Client()
@@ -37,13 +37,13 @@ async def on_ready():
 async def on_ready():
     print('dow started')
 
-# @gold_bot.event
-# async def on_ready():
-#     print('gold started')
+@silver_bot.event
+async def on_ready():
+    print('silver started')
 
-# @dollar_bot.event
-# async def on_Ready():
-#     print('dollar started')
+@dollar_bot.event
+async def on_Ready():
+    print('dollar started')
 
 @vix_bot.event
 async def on_ready():
@@ -68,7 +68,7 @@ https://discordpy.readthedocs.io/en/latest/ext/tasks/
 @tasks.loop(seconds=1)
 async def called_second():
     try:
-        data = scrape_live_ticker()
+        data = wrangle_data()
 
         print(data)
 
@@ -76,8 +76,8 @@ async def called_second():
         ticker_nas      = data['nas'] 
         ticker_dow      = data['dow'] 
         ticker_vix      = data['vix']
-        # ticker_dollar   = data['dollar']
-        # ticker_gold     = data['gold']
+        ticker_dollar   = data['dollar']
+        ticker_silver     = data['silver']
         ticker_btc      = data['btc']
         ticker_eth      = data['eth']
 
@@ -157,45 +157,45 @@ async def called_second():
         await guild_channel_vix.me.edit(nick=f"4) {name_vix}")
         await vix_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"VIX {watching_vix}"))
 
-        ## dollar  
-        # name_dollar = '{:20,.2f}'.format(ticker_dollar['last'])
-        # watching_dollar = ticker_dollar['change%']
-        # guild_channel_dollar = dollar_bot.get_guild(target_channel_id)
+        # dollar  
+        name_dollar = '{:20,.2f}'.format(ticker_dollar['last'])
+        watching_dollar = ticker_dollar['change%']
+        guild_channel_dollar = dollar_bot.get_guild(target_channel_id)
 
-        # red = get(guild_channel_dollar.roles, name='RED')
-        # green = get(guild_channel_dollar.roles, name='GREEN')
+        red = get(guild_channel_dollar.roles, name='RED')
+        green = get(guild_channel_dollar.roles, name='GREEN')
 
-        # if "-" in  watching_dollar:
-        #     discord_bot = guild_channel_dollar.me
-        #     await discord_bot.remove_roles(green)
-        #     await discord_bot.add_roles(red)
-        # else: 
-        #     discord_bot = guild_channel_dollar.me
-        #     await discord_bot.remove_roles(red)
-        #     await discord_bot.add_roles(green)
+        if "-" in  watching_dollar:
+            discord_bot = guild_channel_dollar.me
+            await discord_bot.remove_roles(green)
+            await discord_bot.add_roles(red)
+        else: 
+            discord_bot = guild_channel_dollar.me
+            await discord_bot.remove_roles(red)
+            await discord_bot.add_roles(green)
 
-        # await guild_channel_dollar.me.edit(nick=f"5) {name_dollar}")
-        # await dollar_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"DXY {watching_dollar}"))
+        await guild_channel_dollar.me.edit(nick=f"5) {name_dollar}")
+        await dollar_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"DXY {watching_dollar}"))
 
-        ## gold  
-        # name_gold = '{:20,.2f}'.format(ticker_gold['last'])
-        # watching_gold = ticker_gold['change%']
-        # guild_channel_gold = gold_bot.get_guild(target_channel_id)
+        # silver  
+        name_silver = '{:20,.2f}'.format(ticker_silver['last'])
+        watching_silver = ticker_silver['change%']
+        guild_channel_silver = silver_bot.get_guild(target_channel_id)
 
-        # red = get(guild_channel_gold.roles, name='RED')
-        # green = get(guild_channel_gold.roles, name='GREEN')
+        red = get(guild_channel_silver.roles, name='RED')
+        green = get(guild_channel_silver.roles, name='GREEN')
 
-        # if "-" in  watching_gold:
-        #     discord_bot = guild_channel_gold.me
-        #     await discord_bot.remove_roles(green)
-        #     await discord_bot.add_roles(red)
-        # else: 
-        #     discord_bot = guild_channel_gold.me
-        #     await discord_bot.remove_roles(red)
-        #     await discord_bot.add_roles(green)
+        if "-" in  watching_silver:
+            discord_bot = guild_channel_silver.me
+            await discord_bot.remove_roles(green)
+            await discord_bot.add_roles(red)
+        else: 
+            discord_bot = guild_channel_silver.me
+            await discord_bot.remove_roles(red)
+            await discord_bot.add_roles(green)
 
-        # await guild_channel_gold.me.edit(nick=f"6) {name_gold}")
-        # await gold_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"GOLD {watching_gold}"))
+        await guild_channel_silver.me.edit(nick=f"6) {name_silver}")
+        await silver_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"GOLD {watching_silver}"))
 
         #shit coin stuff
         # btc
@@ -246,14 +246,14 @@ async def before():
     await es_bot.wait_until_ready()
     await nas_bot.wait_until_ready()
     await dow_bot.wait_until_ready()
-
-    # await dollar_bot.wait_until_ready()
     await vix_bot.wait_until_ready()
+
+    await dollar_bot.wait_until_ready()
+    await silver_bot.wait_until_ready()    
 
     await btc_bot.wait_until_ready()
     await eth_bot.wait_until_ready()
 
-    # await gold_bot.wait_until_ready()    
     print("Finished waiting")
 
 called_second.start()
@@ -263,9 +263,9 @@ async def create_bots():
     nas_task = loop.create_task(nas_bot.start(nas))
     dow_task = loop.create_task(dow_bot.start(dow))
     vix_task = loop.create_task(vix_bot.start(vix))
-    # dollar_task = loop.create_task(dollar_bot.start(dollar))
 
-    # gold_task = loop.create_task(gold_bot.start(gold))
+    dollar_task = loop.create_task(dollar_bot.start(dollar))
+    silver_task = loop.create_task(silver_bot.start(silver))
 
     btc_task = loop.create_task(btc_bot.start(btc))
     eth_task = loop.create_task(eth_bot.start(eth))
@@ -275,9 +275,9 @@ async def create_bots():
     await nas_task
     await dow_task
     await vix_task
-    # await dollar_task 
 
-    # await gold_task
+    await dollar_task 
+    await silver_task
 
     await btc_task 
     await eth_task

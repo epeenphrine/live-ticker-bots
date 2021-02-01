@@ -69,12 +69,11 @@ def wrangle_data():
       'es': None,
       'nas': None,
       'dxy': None,
-      'gold': None,
+      'silver': None,
       'vix': None,
       'btc': None,
       'eth': None,
     }
-    data_keys = data.keys()
     for df_dicts in df_dict_list:
         if df_dicts:
             if not data['dow']:
@@ -86,7 +85,13 @@ def wrangle_data():
             if not data['vix']:
                 data['vix'] = [df_dict for df_dict in df_dicts if df_dict['name'] == 'S&P 500 VIX'][0]
             if not data['dxy']:
-                data['dxy'] = [df_dict for df_dict in df_dicts if df_dict['name'] == 'S&P 500 VIX'][0]
+                check_for_dxy = [df_dict for df_dict in df_dicts if df_dict['name'] == 'Dollar Index']
+                if check_for_dxy:
+                    data['dxy'] = check_for_dxy[0]
+            if not data['silver']:
+                check_for_silver = [df_dict for df_dict in df_dicts if df_dict['name'] == 'Silver']
+                if check_for_silver:
+                    data['silver'] = check_for_silver[0]
             if not data['btc']:
                 check_for_btc = [df_dict for df_dict in df_dicts if df_dict['name'] == 'BTC']
                 if check_for_btc:
