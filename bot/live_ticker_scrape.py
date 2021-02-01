@@ -99,7 +99,7 @@ def wrangle_data():
             if not data['eth']:
                 check_for_eth = [df_dict for df_dict in df_dicts if df_dict['name'] == 'ETH']
                 if check_for_eth:
-                    data['eth'] = check_for_eth
+                    data['eth'] = check_for_eth[0]
     return data
 testing = wrangle_data()
 print(testing)
