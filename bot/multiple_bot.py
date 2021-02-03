@@ -67,7 +67,11 @@ https://discordpy.readthedocs.io/en/latest/ext/tasks/
 
 @tasks.loop(seconds=1)
 async def called_second():
+    ## get all guild ids that the bot is joined in 
+
+
     data = wrangle_data()
+    print(data)
 
     ticker_es       = data['es']
     ticker_nas      = data['nas'] 
@@ -78,160 +82,209 @@ async def called_second():
     ticker_btc      = data['btc']
     ticker_eth      = data['eth']
     ## es
-    name_es = '{:20,.2f}'.format(ticker_es['last'])
-    watching_es = ticker_es['change%']
-    guild_channel = es_bot.get_guild(target_channel_id)
-
-    red = get(guild_channel.roles, name='RED')
-    green = get(guild_channel.roles, name='GREEN')
-    if "-" in watching_es:
-        discord_bot = guild_channel.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
-    else: 
-        discord_bot = guild_channel.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-    await guild_channel.me.edit(nick=f"1) {name_es}") 
-    await es_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"ES {watching_es}"))
-
+    if ticker_es:
+        guild_ids = [guild.id for guild in es_bot.guilds] 
+        name_es = '{:20,.2f}'.format(ticker_es['last'])
+        watching_es = ticker_es['change%']
+        guild_channels = [es_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in watching_es:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+                await guild_channel.me.edit(nick=f"1) {name_es}") 
+                await es_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"ES {watching_es}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('no es data')
     ##nas
-    name_nas = '{:20,.2f}'.format(ticker_nas['last'])
-    watching_nas= ticker_nas['change%']
-    guild_channel1 = nas_bot.get_guild(target_channel_id)
-
-    red = get(guild_channel1.roles, name='RED')
-    green = get(guild_channel1.roles, name='GREEN')
-
-    if "-" in watching_nas:
-        discord_bot = guild_channel1.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
+    if ticker_nas:
+        guild_ids = [guild.id for guild in nas_bot.guilds] 
+        name_nas = '{:20,.2f}'.format(ticker_nas['last'])
+        watching_nas= ticker_nas['change%']
+        guild_channels = [nas_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in watching_nas:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+                await guild_channel.me.edit(nick=f"2) {name_nas}")
+                await nas_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"NQ {watching_nas}"))
+            except:
+                print(f'broke in {guild_channel}')
     else: 
-        discord_bot = guild_channel1.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-    await guild_channel1.me.edit(nick=f"2) {name_nas}")
-    await nas_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"NQ {watching_nas}"))
-
+        print('no nas data')
     ## dow
-    name_dow = '{:20,.2f}'.format(ticker_dow['last'])
-    watching_dow = ticker_dow['change%']
-    guild_channel2 = dow_bot.get_guild(target_channel_id)
+    if ticker_dow: 
+        guild_ids = [guild.id for guild in dow_bot.guilds] 
+        name_dow = '{:20,.2f}'.format(ticker_dow['last'])
+        watching_dow = ticker_dow['change%']
 
-    red = get(guild_channel2.roles, name='RED')
-    green = get(guild_channel2.roles, name='GREEN')
+        guild_channels = [dow_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in watching_dow:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+                await guild_channel.me.edit(nick=f"3) {name_dow}")
+                await dow_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"DJI {watching_dow}"))
 
-    if "-" in watching_dow:
-        discord_bot = guild_channel2.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
-    else: 
-        discord_bot = guild_channel2.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-    await guild_channel2.me.edit(nick=f"3) {name_dow}")
-    await dow_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"DJI {watching_dow}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('no dow data')
 
     ## vix 
-    name_vix = '{:20,.2f}'.format(ticker_vix['last'])
-    watching_vix = ticker_vix['change%']
-    guild_channel_vix = vix_bot.get_guild(target_channel_id)
+    if vix:
+        guild_ids = [guild.id for guild in vix_bot.guilds] 
+        name_vix = '{:20,.2f}'.format(ticker_vix['last'])
+        watching_vix = ticker_vix['change%']
 
-    red = get(guild_channel_vix.roles, name='RED')
-    green = get(guild_channel_vix.roles, name='GREEN')
+        guild_channels = [vix_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in  watching_vix:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
 
-    if "-" in  watching_vix:
-        discord_bot = guild_channel_vix.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
-    else: 
-        discord_bot = guild_channel_vix.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-
-    await guild_channel_vix.me.edit(nick=f"4) {name_vix}")
-    await vix_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"VIX {watching_vix}"))
+                await guild_channel.me.edit(nick=f"4) {name_vix}")
+                await vix_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"VIX {watching_vix}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('no vix data ')
 
     # dollar  
-    name_dollar = '{:20,.2f}'.format(ticker_dollar['last'])
-    watching_dollar = ticker_dollar['change%']
-    guild_channel_dollar = dollar_bot.get_guild(target_channel_id)
+    if ticker_dollar:
+        guild_ids = [guild.id for guild in dollar_bot.guilds] 
+        name_dollar = '{:20,.2f}'.format(ticker_dollar['last'])
+        watching_dollar = ticker_dollar['change%']
 
-    red = get(guild_channel_dollar.roles, name='RED')
-    green = get(guild_channel_dollar.roles, name='GREEN')
+        guild_channels = [dollar_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in  watching_dollar:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
 
-    if "-" in  watching_dollar:
-        discord_bot = guild_channel_dollar.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
-    else: 
-        discord_bot = guild_channel_dollar.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-
-    await guild_channel_dollar.me.edit(nick=f"5) {name_dollar}")
-    await dollar_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"DXY {watching_dollar}"))
+                await guild_channel.me.edit(nick=f"5) {name_dollar}")
+                await dollar_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"DXY {watching_dollar}"))
+            except:
+                print(f'broke in {guild_channel}')
+        else:
+            print('no dollar data')
 
     # silver  
-    name_silver = '{:20,.2f}'.format(ticker_silver['last'])
-    watching_silver = ticker_silver['change%']
-    guild_channel_silver = silver_bot.get_guild(target_channel_id)
-
-    red = get(guild_channel_silver.roles, name='RED')
-    green = get(guild_channel_silver.roles, name='GREEN')
-
-    if "-" in  watching_silver:
-        discord_bot = guild_channel_silver.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
-    else: 
-        discord_bot = guild_channel_silver.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-
-    await guild_channel_silver.me.edit(nick=f"6) {name_silver}")
-    await silver_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{ticker_silver['name'].upper()} {watching_silver}"))
-
+    if ticker_silver:
+        guild_ids = [guild.id for guild in silver_bot.guilds] 
+        name_silver = '{:20,.2f}'.format(ticker_silver['last'])
+        watching_silver = ticker_silver['change%']
+        
+        guild_channels = [silver_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in  watching_silver:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+                await guild_channel.me.edit(nick=f"6) {name_silver}")
+                await silver_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{ticker_silver['name'].upper()} {watching_silver}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('no silver data')
     #shit coin stuff
     # btc
-    name_btc = '{:20,.2f}'.format(ticker_btc['last'])
-    watching_btc = ticker_btc['change%']
-    guild_channel3 = btc_bot.get_guild(target_channel_id)
+    if ticker_btc:
+        guild_ids = [guild.id for guild in btc_bot.guilds] 
+        name_btc = '{:20,.2f}'.format(ticker_btc['last'])
+        watching_btc = ticker_btc['change%']
+        guild_channels = [btc_bot.get_guild(guild_id) for guild_id in guild_ids]
 
-    red = get(guild_channel3.roles, name='RED')
-    green = get(guild_channel3.roles, name='GREEN')
-
-    if "-" in watching_btc:
-        discord_bot = guild_channel3.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
-
-    else: 
-        discord_bot = guild_channel3.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-    await guild_channel3.me.edit(nick=f"7) {name_btc}")
-    await btc_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"BTC {watching_btc}"))
-
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in watching_btc:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+                await guild_channel.me.edit(nick=f"7) {name_btc}")
+                await btc_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"BTC {watching_btc}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('no data for btc')
     # eth 
-    name_eth= '{:20,.2f}'.format(ticker_eth['last'])
-    watching_eth = ticker_eth['change%']
-    guild_channel4 = eth_bot.get_guild(target_channel_id)
-
-    red = get(guild_channel4.roles, name='RED')
-    green = get(guild_channel4.roles, name='GREEN')
-
-    if "-" in  watching_eth:
-        discord_bot = guild_channel4.me
-        await discord_bot.remove_roles(green)
-        await discord_bot.add_roles(red)
-    else: 
-        discord_bot = guild_channel4.me
-        await discord_bot.remove_roles(red)
-        await discord_bot.add_roles(green)
-    await guild_channel4.me.edit(nick=f"8) {name_eth}")
-    await eth_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"ETH {watching_eth}"))
+    if ticker_eth:
+        guild_ids = [guild.id for guild in eth_bot.guilds] 
+        name_eth= '{:20,.2f}'.format(ticker_eth['last'])
+        watching_eth = ticker_eth['change%']
+        guild_channels = [eth_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in  watching_eth:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+                await guild_channel.me.edit(nick=f"8) {name_eth}")
+                await eth_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"ETH {watching_eth}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('nodata for eth')
 
     print(f'updated ')
 
