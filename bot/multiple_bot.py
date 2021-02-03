@@ -207,8 +207,8 @@ async def called_second():
                 await dollar_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"DXY {watching_dollar}"))
             except:
                 print(f'broke in {guild_channel}')
-        else:
-            print('no dollar data')
+    else:
+        print('no dollar data')
 
     # silver  
     if ticker_silver:

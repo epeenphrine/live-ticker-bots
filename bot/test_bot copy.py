@@ -11,17 +11,16 @@ import datetime
 
 
 from live_ticker_scrape import wrangle_data 
-from tokens import optional_ticker_1, optional_ticker_2 
-from stocktwits import make_req
+from tokens import dev, dev1
 
-option_1 = commands.Bot('.')
-option_2 = commands.Bot('..')
+client = commands.Bot('!')
 
+#target_channel_id = 492405515931090964 
+target_channel_id = 644682833511579668
 '''
 @tasks.loop() can be changed to seconds, minutes, hours
 https://discordpy.readthedocs.io/en/latest/ext/tasks/
 '''
-
 @tasks.loop(seconds=1)
 async def called_second():
     # guild_channel = client.get_guild(target_channel_id)
@@ -42,16 +41,28 @@ async def called_second():
             await guild_channel.me.remove_roles(red)
             await guild_channel.me.add_roles(green)
         await guild_channel.me.edit(nick=f"example) {ticker}")
-
-    stocktwits_data = make_req()  
-    guild_ids = [guild.id for guild in client.guilds]
-    guild_channels = [client.get_guild(guild_id) for guild_id in guild_ids]
-    for ticker in stocktwits_data:
-        check_extended = stocktwits_data[ticker]['ExtendedHoursPrice']
-        if check_extended:
-
-        
     print(f'updated ')
+
+    # #await client.user.edit(nick='hello')
+
+    # guild_channel = client.get_guild(target_channel_id)
+    # discord_bot = guild_channel.me
+    # red = get(guild_channel.roles, name='red')
+    # green= get(guild_channel.roles, name='green')
+
+    # for item in guild_channel.roles:
+    #     if str(item).lower() == "red":
+    #         await discord_bot.add_roles(red)
+    #         await discord_bot.remove_roles(red)
+    #         print('added red')
+    #     if str(item).lower() =="green":
+    #         await discord_bot.add_roles(green)
+    #         await discord_bot.remove_roles(green)
+    #         print('added green')
+
+    # print(guild_channel.me)
+    
+    # something = await guild_channel.me.edit(nick=f"1) {ticker}",  colour=discord.Colour(colours[2]))
 
 @called_second.before_loop
 async def before():
