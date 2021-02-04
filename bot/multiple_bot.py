@@ -10,7 +10,7 @@ import os
 import datetime
 
 from live_ticker_scrape import wrangle_data
-from tokens import dev, dev1, es, nas, dow, dollar, vix, btc, eth, silver 
+from tokens import dev, dev1, es, nas, dow, dollar, vix, btc, eth, silver , link
 
 es_bot = discord.Client()
 nas_bot = discord.Client()
@@ -23,6 +23,8 @@ silver_bot = discord.Client()
 
 btc_bot = discord.Client()
 eth_bot=  discord.Client()
+link_bot = discord.Client()
+
 loop = asyncio.get_event_loop()
 
 @es_bot.event
@@ -56,10 +58,10 @@ async def on_ready():
 @eth_bot.event
 async def on_ready():
     print('eth started')
+@link_bot.event
+async def on_ready():
+    print('link started')
     
-## change here to whatever 
-target_channel_id = 492405515931090964 
-# target_channel_id = 644682833511579668
 '''
 @tasks.loop() can be changed to seconds, minutes, hours
 https://discordpy.readthedocs.io/en/latest/ext/tasks/
@@ -81,6 +83,7 @@ async def called_second():
     ticker_silver   = data['silver']
     ticker_btc      = data['btc']
     ticker_eth      = data['eth']
+    ticker_link     = data['link']
     ## es
     if ticker_es:
         guild_ids = [guild.id for guild in es_bot.guilds] 
@@ -188,7 +191,6 @@ async def called_second():
         guild_ids = [guild.id for guild in dollar_bot.guilds] 
         name_dollar = '{:20,.2f}'.format(ticker_dollar['last'])
         watching_dollar = ticker_dollar['change%']
-
         guild_channels = [dollar_bot.get_guild(guild_id) for guild_id in guild_ids]
         for guild_channel in guild_channels:
             try:
@@ -285,7 +287,30 @@ async def called_second():
                 print(f'broke in {guild_channel}')
     else:
         print('nodata for eth')
-
+    # link
+    if ticker_link:
+        guild_ids = [guild.id for guild in link_bot.guilds] 
+        name_link = '{:20,.2f}'.format(ticker_link['last'])
+        watching_link = ticker_link['change%']
+        guild_channels = [link_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in  watching_link:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+                await guild_channel.me.edit(nick=f"9) {name_link}")
+                await link_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"LINK {watching_link}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('nodata for eth')
     print(f'updated ')
 
 @called_second.before_loop
@@ -300,6 +325,7 @@ async def before():
 
     await btc_bot.wait_until_ready()
     await eth_bot.wait_until_ready()
+    await link_bot.wait_until_ready()
 
     print("Finished waiting")
 
@@ -316,8 +342,8 @@ async def create_bots():
 
     btc_task = loop.create_task(btc_bot.start(btc))
     eth_task = loop.create_task(eth_bot.start(eth))
+    link_task = loop.create_task(link_bot.start(link))
     
-
     await es_task 
     await nas_task
     await dow_task
@@ -328,5 +354,6 @@ async def create_bots():
 
     await btc_task 
     await eth_task
-    
+    await link_task 
+
 loop.run_until_complete(create_bots())

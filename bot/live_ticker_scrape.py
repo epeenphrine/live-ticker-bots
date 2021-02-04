@@ -73,6 +73,7 @@ def wrangle_data():
       'vix': None,
       'btc': None,
       'eth': None,
+      'link': None,
     }
     for df_dicts in df_dict_list:
         if df_dicts:
@@ -100,6 +101,10 @@ def wrangle_data():
                 check_for_eth = [df_dict for df_dict in df_dicts if df_dict['name'] == 'ETH']
                 if check_for_eth:
                     data['eth'] = check_for_eth[0]
+            if not data['link']:
+                check_for_link = [df_dict for df_dict in df_dicts if df_dict['name'] == 'LINK']
+                if check_for_link:
+                    data['link'] = check_for_link[0]
     return data
 testing = wrangle_data()
 print(testing)
