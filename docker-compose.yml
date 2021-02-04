@@ -9,3 +9,12 @@ services:
     volumes:
      - ./bot:/app:z
     restart: unless-stopped
+  live_ticker_optional:
+    container_name: live_ticker_bot_optional 
+    image:  "live_ticker_bot_optional"
+    build: 
+      context: bot
+      dockerfile: optional.Dockerfile
+    volumes:
+     - ./bot:/app:z
+    restart: unless-stopped
