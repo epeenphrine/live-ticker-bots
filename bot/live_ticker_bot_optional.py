@@ -23,12 +23,22 @@ loop = asyncio.get_event_loop()
 https://discordpy.readthedocs.io/en/latest/ext/tasks/
 '''
 
-ticker_choice = [
-    'gme',
-    'aapl',
-    'googl'
-]
+try:
+    with open('/tmp/json/ticker_choice', 'r') as f:
+        ticker_choice = json.load(f)
+    print('successfully loaded from json')
+except:
+    print('cant open json starting default var')
+    ticker_choice = [
+        'gme',
+        'aapl',
+        'googl'
+    ]
 
+def save(ticker_choice):
+    with open('/tmp/json/ticker_choice', 'w') as f:
+        json.dump(ticker_choice, f)
+    print('saved') 
 @option_1.command()
 async def change1(ctx, *arg): 
     print('in change1 for option_1')
@@ -36,6 +46,7 @@ async def change1(ctx, *arg):
     if arg and len(arg) == 1:
         ticker_choice[0] = arg[0]
         print(ticker_choice)
+        save(ticker_choice)
 
 @option_1.command()
 async def change2(ctx, *arg): 
@@ -44,6 +55,7 @@ async def change2(ctx, *arg):
     if arg and len(arg) == 1:
         ticker_choice[1] = arg[0]
         print(ticker_choice)
+        save(ticker_choice)
 
 @option_1.command()
 async def change3(ctx, *arg): 
@@ -52,6 +64,7 @@ async def change3(ctx, *arg):
     if arg and len(arg) == 1:
         ticker_choice[2] = arg[0]
         print(ticker_choice)
+        save(ticker_choice)
 
 @tasks.loop(seconds=1)
 async def called_second():
