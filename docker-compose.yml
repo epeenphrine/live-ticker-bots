@@ -1,6 +1,6 @@
 version: "2"
 services:
-  liveTickerBot:
+  live_ticker_bots:
     container_name: live_ticker_bots 
     image:  "live_ticker_bot"
     build: 
@@ -17,4 +17,5 @@ services:
       dockerfile: live_ticker_bots_optional.Dockerfile
     volumes:
      - ./bot:/app:z
+     - /tmp/json/:/tmp/json/
     restart: unless-stopped
