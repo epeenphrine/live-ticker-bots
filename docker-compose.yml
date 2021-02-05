@@ -1,20 +1,20 @@
-version: "3"
+version: "2"
 services:
   liveTickerBot:
-    container_name: liveTickerBot 
+    container_name: live_ticker_bots 
     image:  "live_ticker_bot"
     build: 
       context: bot
-      dockerfile: liveTicker.Dockerfile
+      dockerfile: live_ticker_bots.Dockerfile
     volumes:
      - ./bot:/app:z
     restart: unless-stopped
   live_ticker_optional:
-    container_name: live_ticker_bot_optional 
-    image:  "live_ticker_bot_optional"
+    container_name: live_ticker_bots_optional 
+    image:  "live_ticker_bots_optional"
     build: 
       context: bot
-      dockerfile: optional.Dockerfile
+      dockerfile: live_ticker_bots_optional.Dockerfile
     volumes:
      - ./bot:/app:z
     restart: unless-stopped
