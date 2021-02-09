@@ -10,13 +10,17 @@ import os
 import datetime
 
 from live_ticker_scrape import wrangle_data
-from tokens import dev, dev1, es, nas, dow, dollar, vix, btc, eth, silver , link
+from tokens import dev, dev1, es, nas, dow, us10y, dollar, vix, btc, eth, silver , link
 
 es_bot = discord.Client()
 nas_bot = discord.Client()
 dow_bot = discord.Client()
+
+
+us10y_bot = discord.Client()
 vix_bot = discord.Client()
 ticker_vix = discord.Client()
+
 
 dollar_bot = discord.Client()
 silver_bot = discord.Client()
@@ -42,6 +46,10 @@ async def on_ready():
 @silver_bot.event
 async def on_ready():
     print('silver started')
+
+@us10y_bot.event
+async def on_ready():
+    print('us10y started')
 
 @dollar_bot.event
 async def on_Ready():
@@ -79,6 +87,7 @@ async def called_second():
     ticker_nas      = data['nas'] 
     ticker_dow      = data['dow'] 
     ticker_vix      = data['vix']
+    ticker_us10y    = data['us10y']
     ticker_dollar   = data['dxy']
     ticker_silver   = data['silver']
     ticker_btc      = data['btc']
@@ -211,6 +220,31 @@ async def called_second():
                 print(f'broke in {guild_channel}')
     else:
         print('no dollar data')
+    # us10y 
+    if ticker_us10y:
+        guild_ids = [guild.id for guild in us10y_bot.guilds] 
+        name_us10y = '{:20,.2f}'.format(ticker_us10y['last'])
+        watching_us10y = ticker_us10y['change%']
+        guild_channels = [us10y_bot.get_guild(guild_id) for guild_id in guild_ids]
+        for guild_channel in guild_channels:
+            try:
+                red = get(guild_channel.roles, name='RED')
+                green = get(guild_channel.roles, name='GREEN')
+                if "-" in  watching_us10y:
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(green)
+                    await discord_bot.add_roles(red)
+                else: 
+                    discord_bot = guild_channel.me
+                    await discord_bot.remove_roles(red)
+                    await discord_bot.add_roles(green)
+
+                await guild_channel.me.edit(nick=f"4) {name_us10y}")
+                await us10y_bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"US10Y {watching_us10y}"))
+            except:
+                print(f'broke in {guild_channel}')
+    else:
+        print('no us10y data')
 
     # silver  
     if ticker_silver:
@@ -320,6 +354,7 @@ async def before():
     await dow_bot.wait_until_ready()
     await vix_bot.wait_until_ready()
 
+    await us10y_bot.wait_until_ready()
     await dollar_bot.wait_until_ready()
     await silver_bot.wait_until_ready()    
 
@@ -337,6 +372,7 @@ async def create_bots():
     dow_task = loop.create_task(dow_bot.start(dow))
     vix_task = loop.create_task(vix_bot.start(vix))
 
+    us10y_task = loop.create_task(us10y_bot.start(us10y)) 
     dollar_task = loop.create_task(dollar_bot.start(dollar))
     silver_task = loop.create_task(silver_bot.start(silver))
 
@@ -349,6 +385,7 @@ async def create_bots():
     await dow_task
     await vix_task
 
+    await us10y_task
     await dollar_task 
     await silver_task
 
