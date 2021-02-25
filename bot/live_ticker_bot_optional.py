@@ -66,7 +66,7 @@ async def change3(ctx, *arg):
         print(ticker_choice)
         save(ticker_choice)
 
-@tasks.loop(seconds=1)
+@tasks.loop(seconds=5)
 async def called_second():
     stocktwits_data = make_req(f"{ticker_choice[0]},{ticker_choice[1]},{ticker_choice[2]}")  
 

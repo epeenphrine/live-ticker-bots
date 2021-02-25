@@ -75,7 +75,7 @@ async def on_ready():
 https://discordpy.readthedocs.io/en/latest/ext/tasks/
 '''
 
-@tasks.loop(seconds=1)
+@tasks.loop(seconds=5)
 async def called_second():
     ## get all guild ids that the bot is joined in 
 
