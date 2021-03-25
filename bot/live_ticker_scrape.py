@@ -105,13 +105,14 @@ def wrangle_data():
     for df_dicts in df_dict_list:
         if df_dicts:
             if not data['dow']:
-                data['dow'] = [df_dict for df_dict in df_dicts if df_dict['name'] == 'US 30'][0]
+                data['dow'] = [df_dict for df_dict in df_dicts if 'US 30' in df_dict['name']][0]
+                print(data['dow'])
             if not data['es']:
-                data['es'] = [df_dict for df_dict in df_dicts if df_dict['name'] == 'US 500'][0]
+                data['es'] = [df_dict for df_dict in df_dicts if 'US 500' in df_dict['name']][0]
             if not data['nas']:
-                data['nas'] = [df_dict for df_dict in df_dicts if df_dict['name'] == 'US Tech 100'][0]
+                data['nas'] = [df_dict for df_dict in df_dicts if 'US Tech 100' in df_dict['name']][0]
             if not data['vix']:
-                data['vix'] = [df_dict for df_dict in df_dicts if df_dict['name'] == 'S&P 500 VIX'][0]
+                data['vix'] = [df_dict for df_dict in df_dicts if 'S&P 500 VIX' in df_dict['name']][0]
             if not data['dxy']:
                 check_for_dxy = [df_dict for df_dict in df_dicts if df_dict['name'] == 'Dollar Index']
                 if check_for_dxy:
@@ -136,7 +137,10 @@ def wrangle_data():
                 check_for_link = [df_dict for df_dict in df_dicts if df_dict['name'] == 'LINK']
                 if check_for_link:
                     data['link'] = check_for_link[0]
-
     return data
-testing = wrangle_data()
-print(testing)
+
+if __name__ == "__main__":
+    print('running script directly through commandline')
+    testing = wrangle_data()
+    print(testing)
+    print('finished running script')
